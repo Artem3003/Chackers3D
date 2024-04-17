@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CheckersBoard : MonoBehaviour
 {
     public Piece[,] pieces = new Piece[8, 8];
+    public List<Piece> forcedPieces;
 
     public GameObject whitePiecePrefab;
     public GameObject blackPiecePrefab;
@@ -14,6 +17,8 @@ public class CheckersBoard : MonoBehaviour
     private Vector3 pieceOffset = new Vector3(0.5f, 0, 0.5f);
 
     private bool isWhiteTurn;
+    [SerializeField] private bool isWhite;
+    private bool hasKilled;
 
     private Piece selectedPiece;
     private Vector2 mouseOver;
@@ -23,6 +28,7 @@ public class CheckersBoard : MonoBehaviour
     public void Start()
     {
         isWhiteTurn = true;
+        forcedPieces = new List<Piece>();
         GenerateBoard();
     }
     public void Update()
@@ -79,6 +85,7 @@ public class CheckersBoard : MonoBehaviour
 
     private void TryMove(int x1, int y1, int x2, int y2)
     {
+        forcedPieces = ScanForPossibleMove();
         // Multiplayer Support
         startDrag = new Vector2(x1, y1);
         endDrag = new Vector2(x2, y2);
@@ -109,19 +116,37 @@ public class CheckersBoard : MonoBehaviour
             if (selectedPiece.ValidMove(pieces, x1, y1, x2, y2))
             {
                 // if this is a jump
-                if (Math.Abs(x2-x2) == 2)
+                if (Math.Abs(x2 - x1) == 2)
                 {
                     Piece p = pieces[(x1 + x2) /2, (y1 + y2) / 2];
                     if (p != null)
                     {
                         pieces[(x1 + x2) / 2, (y1 + y2) / 2] = null;
-                        Destroy(p);
+                        Destroy(p.gameObject);
+                        hasKilled = true;
                     }
+                }
+
+                // were we soposed to kill anything?
+                if (forcedPieces.Count != 0 && !hasKilled)
+                {
+                    MovePiece(selectedPiece, x1, y1);
+                    startDrag = Vector2.zero;
+                    selectedPiece = null;
+                    return;
                 }
 
                 pieces[x2, y2] = selectedPiece;
                 pieces [x1, y1] = null;
                 MovePiece(selectedPiece, x2, y2);
+
+                EndTurn();
+            } else 
+            {
+                MovePiece(selectedPiece, x1, y1);
+                startDrag = Vector2.zero;
+                selectedPiece = null;
+                return;
             }
         }
 
@@ -133,6 +158,7 @@ public class CheckersBoard : MonoBehaviour
         selectedPiece = null;
         startDrag = Vector2.zero;
         isWhiteTurn = !isWhiteTurn;
+        hasKilled = false;
         CheckVictory();
     }
 
@@ -141,16 +167,46 @@ public class CheckersBoard : MonoBehaviour
         
     }
 
+    private List<Piece> ScanForPossibleMove()
+    {
+        forcedPieces = new List<Piece>();
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (pieces[i, j] != null && pieces[i, j].isWhite == isWhiteTurn)
+                {
+                    if(pieces[i, j].isForceToMove(pieces, i, j))
+                    {
+                        forcedPieces.Add(pieces[i, j]);
+                    }
+                }
+            }
+        }
+        return forcedPieces;
+    }
+
     private void SelctPiece(int x, int y)
     {
         if (x < 0 || x >= pieces.Length || y < 0 || y >= pieces.Length) // out of bounds
             return;
 
         Piece p = pieces[x, y];
-        if (p != null)
+        if (p != null && p.isWhite == isWhite)
         {
-            selectedPiece = p;
-            startDrag = mouseOver;
+            if (forcedPieces.Count == 0)
+            {
+                selectedPiece = p;
+                startDrag = mouseOver;
+            } else
+            {
+                // look for the piece under our forced pieces list
+                if (forcedPieces.Find(fp => fp == p) == null)
+                    return;
+                
+                selectedPiece = p;
+                startDrag = mouseOver;
+            }
         }
     }
 
