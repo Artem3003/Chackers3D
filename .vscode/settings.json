@@ -51,5 +51,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Chackers3D.sln"
+    "dotnet.defaultSolution": "Chackers3D.sln",
+    "dotnet.preferCSharpExtension": true
 }
