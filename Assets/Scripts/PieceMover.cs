@@ -80,6 +80,7 @@ namespace Chackers3D.Assets.Scripts
                             checkersBoard.pieces[(x1 + x2) / 2, (y1 + y2) / 2] = null;
                             capturedPiece.gameObject.SetActive(false);
                             hasKilled = true;
+                            capturedPiece.DisapperSound();
                         }
                     }
 
@@ -103,6 +104,8 @@ namespace Chackers3D.Assets.Scripts
                     checkersBoard.pieces[x2, y2] = selectedPiece;
                     checkersBoard.pieces[x1, y1] = null;
                     MovePiece(selectedPiece, x2, y2);
+
+                    selectedPiece.StepSound();
 
                     EndTurn();
                 } 

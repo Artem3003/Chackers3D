@@ -9,8 +9,13 @@ namespace Chackers3D.Assets.Scripts
 {
     public class Piece : MonoBehaviour
     {
+        private AudioManager audioManager;
         public bool isWhite;
         public bool isKing;
+
+        private void Awake() {
+            audioManager = ServiceLocator.Instance.GetService<AudioManager>();
+        }
 
         public bool isForceToMove(Piece[,] board, int x, int y)
         {
@@ -126,6 +131,16 @@ namespace Chackers3D.Assets.Scripts
                 }
             }
             return false;
+        }
+
+        public void StepSound()
+        {
+            audioManager.PlayStepSound();
+        }
+
+        public void DisapperSound()
+        {
+            audioManager.PlayDisapperSound();
         }
     }
 

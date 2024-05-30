@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Board
   - Border
+  - Audio
   layers:
   - Default
   - TransparentFX
