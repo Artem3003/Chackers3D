@@ -31,6 +31,11 @@ namespace Chackers3D.Assets.Scripts
             {
                 CommandInvoker.UndoCommand();
             }
+
+            if (Input.GetKeyDown(KeyCode.Escape)) // Close game with 'Escape' key
+            {
+                CloseGame();
+            }
         }
 
         public void RestartBoard()
@@ -46,6 +51,10 @@ namespace Chackers3D.Assets.Scripts
             pieceMover.isWhiteTurn = true;
             pieceMover.isWhite = true;
             checkersBoard.GenerateBoard();
+        }
+        private void CloseGame()
+        {
+            Application.Quit();
         }
     }
 }
