@@ -6,14 +6,8 @@ namespace Chackers3D.Assets.Scripts
 {
     public class AudioManager : MonoBehaviour
     {
-        [SerializeField] AudioSource stepSound;
-        [SerializeField] AudioSource disapperSound;
-
-        private void Start()
-        {
-            // Register AudioManager with the Service Locator
-            ServiceLocator.Instance.RegisterService(this);     
-        }
+        [SerializeField] private AudioSource stepSound;
+        [SerializeField] private AudioSource disapperSound;
 
         public void PlayStepSound()
         {

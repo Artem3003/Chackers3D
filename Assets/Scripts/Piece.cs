@@ -13,8 +13,9 @@ namespace Chackers3D.Assets.Scripts
         public bool isWhite;
         public bool isKing;
 
-        private void Awake() {
-            audioManager = ServiceLocator.Instance.GetService<AudioManager>();
+        private void Start() 
+        {
+            audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
         }
 
         public bool isForceToMove(Piece[,] board, int x, int y)

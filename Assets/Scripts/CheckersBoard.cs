@@ -41,7 +41,7 @@ namespace Chackers3D.Assets.Scripts
         }
 
 
-        private void GenerateBoard()
+        public void GenerateBoard()
         {
             // Generate white team
             for (int y = 0; y < 3; y++)

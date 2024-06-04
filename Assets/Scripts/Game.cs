@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,14 +10,16 @@ using UnityEngine.SceneManagement;
 namespace Chackers3D.Assets.Scripts
 {
     public class Game : MonoBehaviour
-    {
+    {        
         [SerializeField] private bool isWhite;
         public MoveCommand moveCommand;
+        public CheckersBoard checkersBoard;
         public PieceMover pieceMover;
-        void Start()
+        private void Start()
         {
             pieceMover = new PieceMover(isWhite);
-            moveCommand = new MoveCommand(pieceMover);
+            moveCommand = new MoveCommand(pieceMover);   
+            checkersBoard = GameObject.FindGameObjectWithTag("Board").GetComponent<CheckersBoard>();
         }
 
         void Update()
@@ -30,31 +33,19 @@ namespace Chackers3D.Assets.Scripts
             }
         }
 
-        // private void CheckVictory()
-        // {
-        //     var pieces = FindObjectsOfType<Piece>();
+        public void RestartBoard()
+        {
+            // Destroy all existing pieces on the board
+            foreach (Transform child in checkersBoard.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
 
-        //     bool hasWhite = false, hasBlack = false;
-        //     for (int i = 0; i < pieces.Length; i++)
-        //     {
-        //         if (pieces[i].isWhite)
-        //             hasWhite = true;
-        //         else 
-        //             hasBlack = true;
-        //     }
 
-        //     if (!hasWhite)
-        //         Victory(false);
-        //     if (!hasBlack)
-        //         Victory(true);
-        // }
-
-        // private void Victory(bool isWhite)
-        // {
-        //     if (isWhite)
-        //         Debug.Log("White team has won!");
-        //     else 
-        //         Debug.Log("Black team has won");
-        // }
+            checkersBoard.pieces = new Piece[8, 8];
+            pieceMover.isWhiteTurn = true;
+            pieceMover.isWhite = true;
+            checkersBoard.GenerateBoard();
+        }
     }
 }

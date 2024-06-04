@@ -4,12 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using TMPro;
 
 namespace Chackers3D.Assets.Scripts
 {
     public class PieceMover
     {
+        TextMeshProUGUI turnText;
         public CheckersBoard checkersBoard;
+        public WinMessage winMessage;
         public List<Piece> forcedPieces;
         public Stack<Move> moveHistory;
 
@@ -32,6 +35,7 @@ namespace Chackers3D.Assets.Scripts
             forcedPieces = new List<Piece>();
             moveHistory = new Stack<Move>();
             checkersBoard = GameObject.FindGameObjectWithTag("Board").GetComponent<CheckersBoard>();
+            winMessage = GameObject.FindGameObjectWithTag("EndMenu").GetComponent<WinMessage>();
         }
 
         public void MovePiece(Piece p, int x, int y)
@@ -189,10 +193,11 @@ namespace Chackers3D.Assets.Scripts
             if (ScanForPossibleMove(selectedPiece, x, y).Count != 0 && hasKilled)
                 return;
 
-
             isWhiteTurn = !isWhiteTurn;
             isWhite = !isWhite;
             hasKilled = false;
+
+            winMessage.CheckVictory();
         }
 
         private void CreateKingPiece()
@@ -225,7 +230,7 @@ namespace Chackers3D.Assets.Scripts
 
             return forcedPieces;
         }
-        private List<Piece> ScanForPossibleMove()
+        public List<Piece> ScanForPossibleMove()
         {
             forcedPieces = new List<Piece>();
             for (int i = 0; i < 8; i++)

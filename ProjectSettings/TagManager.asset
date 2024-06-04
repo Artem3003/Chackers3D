@@ -7,6 +7,8 @@ TagManager:
   - Board
   - Border
   - Audio
+  - WinnerText
+  - EndMenu
   layers:
   - Default
   - TransparentFX

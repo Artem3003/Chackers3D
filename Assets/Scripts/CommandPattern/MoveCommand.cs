@@ -40,6 +40,7 @@ namespace Chackers3D.Assets.Scripts
         {
             if (pieceMover.moveHistory.Count > 0)
             {
+
                 Move lastMove = pieceMover.moveHistory.Pop();
 
                 // Check if the piece was crowned during the move and revert it
@@ -53,6 +54,7 @@ namespace Chackers3D.Assets.Scripts
                     lastMove.movedPiece.isKing = false;
                     lastMove.movedPiece.transform.Rotate(Vector3.right * 180);
                 }
+
                 // Move the piece back to its original position
                 pieceMover.checkersBoard.pieces[(int)lastMove.start.x, (int)lastMove.start.y] = lastMove.movedPiece;
                 pieceMover.checkersBoard.pieces[(int)lastMove.end.x, (int)lastMove.end.y] = null;
@@ -70,11 +72,12 @@ namespace Chackers3D.Assets.Scripts
                 if (!pieceMover.hasKilled)
                 {
                     pieceMover.isWhiteTurn = !pieceMover.isWhiteTurn;
-                    pieceMover.isWhite = !pieceMover.isWhite;     
+                    pieceMover.isWhite = !pieceMover.isWhite;    
                 }
 
                 // Reset the hasKilled flag
                 pieceMover.hasKilled = lastMove.capturedPiece != null;
+
             }
         }
 
